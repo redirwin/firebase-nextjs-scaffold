@@ -1,0 +1,149 @@
+"use client";
+
+import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+
+const loginSchema = z.object({
+    email: z.string().email("Invalid email address"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
+type LoginFormValues = z.infer<typeof loginSchema>;
+
+export function LoginForm() {
+    const { signInWithEmail, signInWithGoogle, error } = useAuth();
+    const [isLoading, setIsLoading] = useState(false);
+    const router = useRouter();
+
+    const form = useForm<LoginFormValues>({
+        resolver: zodResolver(loginSchema),
+        defaultValues: {
+            email: "",
+            password: "",
+        },
+    });
+
+    const onSubmit = async (data: LoginFormValues) => {
+        try {
+            console.log("Login attempt started");
+            setIsLoading(true);
+            await signInWithEmail(data.email, data.password);
+            console.log("Login successful");
+        } catch (error) {
+            console.error("Login error:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleGoogleSignIn = async () => {
+        try {
+            setIsLoading(true);
+            await signInWithGoogle();
+            router.push("/dashboard");
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <div className="w-full max-w-md space-y-8">
+            <div className="text-center">
+                <h2 className="text-2xl font-bold">Sign in to your account</h2>
+            </div>
+
+            <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                    <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Email</FormLabel>
+                                <FormControl>
+                                    <Input 
+                                        type="email" 
+                                        placeholder="email@example.com" 
+                                        {...field} 
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name="password"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Password</FormLabel>
+                                <FormControl>
+                                    <Input 
+                                        type="password" 
+                                        placeholder="••••••••" 
+                                        {...field} 
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    {error && (
+                        <div className="text-red-500 text-sm">{error.message}</div>
+                    )}
+
+                    <div className="space-y-4">
+                        <Button
+                            type="submit"
+                            className="w-full"
+                            disabled={isLoading}
+                        >
+                            {isLoading ? "Signing in..." : "Sign in"}
+                        </Button>
+
+                        <Button
+                            type="button"
+                            variant="outline"
+                            className="w-full"
+                            onClick={handleGoogleSignIn}
+                            disabled={isLoading}
+                        >
+                            Continue with Google
+                        </Button>
+                    </div>
+                </form>
+            </Form>
+
+            <div className="text-center text-sm">
+                <Link href="/forgot-password" className="text-blue-600 hover:underline">
+                    Forgot your password?
+                </Link>
+                <div className="mt-2">
+                    Don&apos;t have an account?{" "}
+                    <Link href="/register" className="text-blue-600 hover:underline">
+                        Sign up
+                    </Link>
+                </div>
+            </div>
+        </div>
+    );
+}
