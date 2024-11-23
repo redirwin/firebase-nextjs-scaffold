@@ -23,7 +23,7 @@ A production-ready authentication scaffold built with Next.js 14, TypeScript, Fi
 ## Getting Started
 
 1. Clone the repository:
-	 - `git clone [your-repo-url]`
+	 - `git clone https://github.com/redirwin/firebase-nextjs-scaffold.git`
 	 - `cd firebase-scaffold`
 
 2. Install dependencies: `npm install` or `yarn install`

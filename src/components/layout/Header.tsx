@@ -2,28 +2,31 @@
 
 import { useAuth } from "@/contexts/AuthContext";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
+
+const navLinkStyles = "text-muted-foreground hover:text-primary transition-colors";
 
 export function Header() {
     const { user, loading, signOut } = useAuth();
 
     if (loading) {
         return (
-            <header className="border-b">
-                <nav className="container mx-auto p-4">
-                    <div>Loading...</div>
+            <header className="border-b border-border">
+                <nav className="container mx-auto px-4 h-14 flex items-center">
+                    <div className="text-muted-foreground">Loading...</div>
                 </nav>
             </header>
         );
     }
 
     return (
-        <header className="border-b">
-            <nav className="container mx-auto p-4">
-                <ul className="flex items-center gap-6 text-sm">
+        <header className="border-b border-border bg-background">
+            <nav className="container mx-auto px-4 h-14">
+                <ul className="flex items-center gap-6 h-full text-sm">
                     <li>
                         <Link 
                             href="/" 
-                            className="text-gray-600 hover:text-blue-600 transition-colors"
+                            className={navLinkStyles}
                         >
                             Home
                         </Link>
@@ -35,7 +38,7 @@ export function Header() {
                             <li>
                                 <Link 
                                     href="/login"
-                                    className="text-gray-600 hover:text-blue-600 transition-colors"
+                                    className={navLinkStyles}
                                 >
                                     Login
                                 </Link>
@@ -43,7 +46,7 @@ export function Header() {
                             <li>
                                 <Link 
                                     href="/register"
-                                    className="text-gray-600 hover:text-blue-600 transition-colors"
+                                    className={navLinkStyles}
                                 >
                                     Register
                                 </Link>
@@ -55,7 +58,7 @@ export function Header() {
                             <li>
                                 <Link 
                                     href="/dashboard"
-                                    className="text-gray-600 hover:text-blue-600 transition-colors"
+                                    className={navLinkStyles}
                                 >
                                     Dashboard
                                 </Link>
@@ -64,25 +67,27 @@ export function Header() {
                                 <li>
                                     <Link 
                                         href="/admin"
-                                        className="text-gray-600 hover:text-blue-600 transition-colors"
+                                        className={navLinkStyles}
                                     >
                                         Admin
                                     </Link>
                                 </li>
                             )}
                             <li>
-                                <a 
-                                    href="#"
+                                <button 
                                     onClick={(e) => {
                                         e.preventDefault();
                                         signOut();
                                     }}
-                                    className="text-gray-600 hover:text-blue-600 transition-colors cursor-pointer"
+                                    className={cn(
+                                        navLinkStyles,
+                                        "cursor-pointer"
+                                    )}
                                 >
                                     Sign Out
-                                </a>
+                                </button>
                             </li>
-                            <li className="text-gray-600 ml-auto">
+                            <li className="text-muted-foreground ml-auto">
                                 {user.email}
                             </li>
                         </>
