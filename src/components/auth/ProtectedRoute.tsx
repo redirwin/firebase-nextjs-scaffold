@@ -16,14 +16,6 @@ export function ProtectedRoute({ children, requiredRole = "user" }: ProtectedRou
     const [isInitialized, setIsInitialized] = useState(false);
 
     useEffect(() => {
-        console.log("ProtectedRoute Effect:", { 
-            loading, 
-            userExists: !!user,
-            userEmail: user?.email,
-            currentPath: pathname,
-            isInitialized 
-        });
-
         if (!loading && !isInitialized) {
             setIsInitialized(true);
             return;
@@ -32,14 +24,17 @@ export function ProtectedRoute({ children, requiredRole = "user" }: ProtectedRou
         if (!loading && isInitialized) {
             // If user is authenticated and on login/register page, redirect to dashboard
             if (user && (pathname === "/login" || pathname === "/register")) {
-                console.log("User authenticated, redirecting from auth page to dashboard");
                 router.replace("/dashboard");
                 return;
             }
 
-            // If user is not authenticated and not on login/register page, redirect to login
-            if (!user && pathname !== "/login" && pathname !== "/register") {
-                console.log("No user found, redirecting protected page to login");
+            // If user is not authenticated and not on allowed public paths, redirect to login
+            if (!user && 
+                pathname !== "/login" && 
+                pathname !== "/register" && 
+                pathname !== "/" && 
+                pathname !== "/reset-password"
+            ) {
                 router.replace("/login");
                 return;
             }

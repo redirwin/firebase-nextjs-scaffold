@@ -25,13 +25,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const router = useRouter();
 
     useEffect(() => {
-        console.log("Setting up Firebase auth listener");
         return onAuthStateChanged(auth, async (firebaseUser) => {
-            console.log("Auth state changed:", { 
-                email: firebaseUser?.email,
-                uid: firebaseUser?.uid 
-            });
-
             try {
                 if (firebaseUser) {
                     // Set minimal user data to enable immediate auth checks
@@ -87,10 +81,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const signInWithEmail = async (email: string, password: string) => {
         try {
-            console.log("AuthContext: Starting email sign in");
             setLoading(true);
             await signInWithEmailAndPassword(auth, email, password);
-            console.log("AuthContext: Email sign in successful");
             router.push("/dashboard");
         } catch (err) {
             console.error("AuthContext: Sign in error:", err);
@@ -130,11 +122,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const signOut = async () => {
         try {
+            setLoading(true);
             await firebaseSignOut(auth);
             router.push("/");
         } catch (err) {
+            console.error("AuthContext: Sign out error:", err);
             setError(err instanceof Error ? err : new Error("Failed to sign out"));
             throw err;
+        } finally {
+            setLoading(false);
         }
     };
 

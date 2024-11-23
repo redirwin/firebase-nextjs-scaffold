@@ -8,9 +8,17 @@ import { LogOut } from "lucide-react";
 export function SignOutButton() {
     const { signOut } = useAuth();
 
+    const handleSignOut = async () => {
+        try {
+            await signOut();
+        } catch (error) {
+            console.error("SignOutButton: Error during sign out:", error);
+        }
+    };
+
     return (
         <Button
-            onClick={signOut}
+            onClick={handleSignOut}
             variant="outline"
             className="gap-2"
         >
