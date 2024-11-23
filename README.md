@@ -5,13 +5,11 @@ A Firebase authentication scaffold built with Next.js 14, TypeScript, Firebase A
 ## Features
 
 - 🔐 Complete authentication system (Email/Password & Google)
-- 👤 User profile management
 - 🛡️ Protected routes with role-based access
 - 📧 Email verification
-- 🔑 Password reset functionality
-- 🎨 Clean UI with Shadcn components
-- 📱 Fully responsive design
-- ⚡ Server-side rendering support
+- 🔑 Lost password functionality
+- 🎨 Clean UI with Shadcn components and Tailwind CSS
+- 📱 Basic responsive design ready for your own styling
 
 ## Prerequisites
 
