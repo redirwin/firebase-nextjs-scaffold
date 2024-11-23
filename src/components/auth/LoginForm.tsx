@@ -16,6 +16,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const loginSchema = z.object({
     email: z.string().email("Invalid email address"),
@@ -87,7 +88,15 @@ export function LoginForm() {
                     name="password"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Password</FormLabel>
+                            <div className="flex items-center justify-between">
+                                <FormLabel>Password</FormLabel>
+                                <Link 
+                                    href="/reset-password" 
+                                    className="text-sm text-primary hover:underline"
+                                >
+                                    Forgot password?
+                                </Link>
+                            </div>
                             <FormControl>
                                 <Input 
                                     type="password" 

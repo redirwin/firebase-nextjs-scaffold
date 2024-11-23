@@ -69,9 +69,6 @@ export function RegisterForm() {
 
     return (
         <div className="w-full max-w-md space-y-8">
-            <div className="text-center">
-                <h2 className="text-2xl font-bold">Create your account</h2>
-            </div>
 
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -151,11 +148,13 @@ export function RegisterForm() {
                 </form>
             </Form>
 
-            <div className="text-center text-sm">
-                Already have an account?{" "}
-                <Link href="/login" className="text-blue-600 hover:underline">
-                    Sign in
-                </Link>
+            <div className="text-center text-sm space-y-2">
+                <div>
+                    Already have an account?{" "}
+                    <Link href="/login" className="text-blue-600 hover:underline">
+                        Sign in
+                    </Link>
+                </div>
             </div>
         </div>
     );
