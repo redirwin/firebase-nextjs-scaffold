@@ -65,7 +65,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         });
     }, []);
 
-    const signInWithGoogle = async () => {
+    const signInWithGoogle = async (): Promise<boolean> => {
         try {
             setLoading(true);
             const provider = new GoogleAuthProvider();
@@ -88,9 +88,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 };
                 
                 await createUserProfile(userProfile);
+                return true; // Indicates new account was created
             }
             
-            router.push("/dashboard");
+            return false; // Indicates existing account was used
         } catch (err) {
             setError(err instanceof Error ? err : new Error("Failed to sign in with Google"));
             throw err;
@@ -179,6 +180,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
     };
 
+    const sendVerificationEmail = async () => {
+        try {
+            if (!auth.currentUser) {
+                throw new Error("No user logged in");
+            }
+            await sendEmailVerification(auth.currentUser);
+        } catch (error) {
+            console.error("Error sending verification email:", error);
+            throw error; // Re-throw to handle in the component
+        }
+    };
+
     const value: AuthContextType = {
         user,
         loading,
@@ -188,7 +201,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         signUp,
         signOut,
         resetPassword,
-        updateProfile
+        updateProfile,
+        sendVerificationEmail,
     };
 
     return (

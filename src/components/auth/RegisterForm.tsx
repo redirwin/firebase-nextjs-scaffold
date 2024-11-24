@@ -17,6 +17,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { getFirebaseErrorMessage } from "@/utils/auth";
 
 const registerSchema = z.object({
     email: z.string().email("Invalid email address"),
@@ -37,6 +39,7 @@ export function RegisterForm() {
     const { signUp, signInWithGoogle } = useAuth();
     const [isLoading, setIsLoading] = useState(false);
     const { toast } = useToast();
+    const router = useRouter();
 
     const form = useForm<RegisterFormValues>({
         resolver: zodResolver(registerSchema),
@@ -51,15 +54,36 @@ export function RegisterForm() {
         try {
             setIsLoading(true);
             await signUp(data.email, data.password);
-            toast({
-                title: "Registration successful",
-                description: "Please check your email for verification.",
-                variant: "default",
-            });
+            router.push("/verify-email");
         } catch (error) {
+            const errorMessage = getFirebaseErrorMessage(error);
             toast({
                 title: "Registration failed",
-                description: error instanceof Error ? error.message : "An error occurred",
+                description: errorMessage,
+                variant: "destructive",
+            });
+            form.setValue("password", "");
+            form.setValue("confirmPassword", "");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleGoogleSignIn = async () => {
+        try {
+            setIsLoading(true);
+            const result = await signInWithGoogle();
+            toast({
+                title: "Success",
+                description: "Signed in successfully!",
+                variant: "default",
+            });
+            router.push("/dashboard");
+        } catch (error) {
+            const errorMessage = getFirebaseErrorMessage(error);
+            toast({
+                title: "Google sign-in failed",
+                description: errorMessage,
                 variant: "destructive",
             });
         } finally {
@@ -139,7 +163,7 @@ export function RegisterForm() {
                             type="button"
                             variant="outline"
                             className="w-full"
-                            onClick={() => signInWithGoogle()}
+                            onClick={handleGoogleSignIn}
                             disabled={isLoading}
                         >
                             Continue with Google

@@ -9,15 +9,15 @@ const navLinkStyles = "text-muted-foreground hover:text-primary transition-color
 export function Header() {
     const { user, loading, signOut } = useAuth();
 
-    if (loading) {
-        return (
-            <header className="border-b border-border">
-                <nav className="container mx-auto px-4 h-14 flex items-center">
-                    <div className="text-muted-foreground">Loading...</div>
-                </nav>
-            </header>
-        );
-    }
+    // if (loading) {
+    //     return (
+    //         <header className="border-b border-border">
+    //             <nav className="container mx-auto px-4 h-14 flex items-center">
+    //                 <div className="text-muted-foreground">Loading...</div>
+    //             </nav>
+    //         </header>
+    //     );
+    // }
 
     return (
         <header className="border-b border-border bg-background">

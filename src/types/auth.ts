@@ -19,10 +19,11 @@ export interface AuthContextType {
     user: UserProfile | null;
     loading: boolean;
     error: Error | null;
-    signInWithGoogle: () => Promise<void>;
+    signInWithGoogle: () => Promise<boolean>;
     signInWithEmail: (email: string, password: string) => Promise<void>;
     signUp: (email: string, password: string) => Promise<void>;
     signOut: () => Promise<void>;
     resetPassword: (email: string) => Promise<void>;
     updateProfile: (data: Partial<UserProfile>) => Promise<void>;
+    sendVerificationEmail: () => Promise<void>;
 }

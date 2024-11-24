@@ -3,6 +3,7 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { auth } from "@/lib/firebase";
 
 interface ProtectedRouteProps {
     children: React.ReactNode;
@@ -18,36 +19,30 @@ export function ProtectedRoute({ children, requiredRole = "user" }: ProtectedRou
     useEffect(() => {
         if (!loading && !isInitialized) {
             setIsInitialized(true);
-            return;
         }
 
         if (!loading && isInitialized) {
-            // If user is authenticated and on login/register page, redirect to dashboard
-            if (user && (pathname === "/login" || pathname === "/register")) {
-                router.replace("/dashboard");
-                return;
-            }
-
-            // If user is not authenticated and not on allowed public paths, redirect to login
-            if (!user && 
+            // If user needs email verification, redirect to verify-email page
+            if (user && !auth.currentUser?.emailVerified && 
                 pathname !== "/login" && 
                 pathname !== "/register" && 
                 pathname !== "/" && 
-                pathname !== "/reset-password"
+                pathname !== "/verify-email" &&
+                pathname !== "/verify-email/success"
             ) {
-                router.replace("/login");
+                router.push("/verify-email");
                 return;
             }
         }
-    }, [user, loading, router, pathname, requiredRole, isInitialized]);
+    }, [user, loading, router, pathname, isInitialized]);
 
-    // Show loading until fully initialized
     if (loading || !isInitialized) {
         return <div>Loading...</div>;
     }
 
     // For protected routes, don't render if not authenticated
-    if (!user && pathname !== "/login" && pathname !== "/register") {
+    if (!user && pathname !== "/login" && pathname !== "/register" && pathname !== "/") {
+        router.push("/login");
         return null;
     }
 

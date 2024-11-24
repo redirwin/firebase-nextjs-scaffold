@@ -10,7 +10,7 @@ export default function LoginPage() {
             <div className="min-h-screen flex items-center justify-center bg-background p-4 md:p-8">
                 <div className="w-full max-w-md space-y-6">
                     <div className="space-y-2 text-center">
-                        <h1 className="text-3xl font-bold tracking-tight">Welcome back</h1>
+                        <h1 className="text-3xl font-bold tracking-tight">Sign In</h1>
                         <p className="text-sm text-muted-foreground">
                             Enter your credentials to sign in to your account
                         </p>
