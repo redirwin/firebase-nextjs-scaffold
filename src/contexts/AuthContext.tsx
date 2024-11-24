@@ -69,7 +69,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         try {
             setLoading(true);
             const provider = new GoogleAuthProvider();
-            await signInWithPopup(auth, provider);
+            const result = await signInWithPopup(auth, provider);
+            
+            // Check if user already exists in Firestore
+            const existingProfile = await getUserProfile(result.user.uid);
+            
+            if (!existingProfile) {
+                // Create new user profile if they don't exist
+                const userProfile: UserProfile = {
+                    uid: result.user.uid,
+                    email: result.user.email,
+                    displayName: result.user.displayName,
+                    photoURL: result.user.photoURL,
+                    emailVerified: result.user.emailVerified,
+                    role: "user",
+                    createdAt: new Date(),
+                    lastLogin: new Date()
+                };
+                
+                await createUserProfile(userProfile);
+            }
+            
             router.push("/dashboard");
         } catch (err) {
             setError(err instanceof Error ? err : new Error("Failed to sign in with Google"));
